@@ -1,5 +1,4 @@
-# nebraska
-[![build status](https://secure.travis-ci.org/thlorenz/nebraska.png)](http://travis-ci.org/thlorenz/nebraska)
+# nebraska [![build status](https://secure.travis-ci.org/thlorenz/nebraska.png)](http://travis-ci.org/thlorenz/nebraska)
 
 Streams the state of another stream.
 
@@ -10,12 +9,17 @@ Streams the state of another stream.
 ## Status
 
 Nix, Nada, Nichevo, Nothing --> go away!
+
 ## Installation
 
     npm install nebraska
 
 ## API
 
+
+## Why the name Nebraska?
+
+Cause it has more streams than Montana.
 
 ## License
 
