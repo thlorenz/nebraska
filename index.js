@@ -6,6 +6,10 @@ var util     =  require('util')
 
 module.exports = WatcherReadable;
 
+function defaultStateProps () {
+  return [ 'highWaterMark', 'bufferLength' ];
+}
+
 util.inherits(WatcherReadable, Readable);
 function WatcherReadable (stream, opts) { 
   if (!(this instanceof WatcherReadable)) return new WatcherReadable(stream, opts);
@@ -19,14 +23,17 @@ function WatcherReadable (stream, opts) {
   if (opts.interval === null) this._interval = null;
   else                        this._interval = opts.interval || 500;
 
-  this._properties = opts.properties;
+  this._properties = { 
+      readable: opts.readable || defaultStateProps()
+    , writable: opts.writable || defaultStateProps() 
+  };
 
   var info = {};
   if (stream._readableState) info.readable = stream._readableState;
   if (stream._writableState) info.writable = stream._writableState;
-
-  this._label = (opts.blessed && opts.blessed.label) || stream.constructor.name + '(W)';
   this._streamInfo = info;
+
+  this._label = (opts.blessed && opts.blessed.label) || stream.constructor.name + '(S)';
   this._ending = false;
 }
 
@@ -50,46 +57,33 @@ proto._report = function () {
   var info = this._streamInfo;
   var r = { label: this._label };
 
-  if (info.readable) r.readable = this._reportReadable(info.readable);
-  if (info.writable) r.writable = this._reportWritable(info.writable);
+  if (info.readable) r.readable = this.reportReadable(info.readable);
+  if (info.writable) r.writable = this.reportWritable(info.writable);
   if (info.index) r.index = info.index;
 
   this.push(r);
 }
 
-proto._reportReadable = function (readable) {
-  var report = {};
+proto._reportState = function (stateName, state) {
+  var report = {}
+    , properties = this._properties[stateName];
 
-  // TODO: config these props
-  [ // 'highWaterMark'
-  //, 'objectMode'
-  //, 'flowing'
-  //, 'pipesCount'
-  // , 'reading' 
-  //, 'ranOut'
-  //, 'awaitDrain'
-  ].forEach(reportOn);
+  properties.forEach(reportOn);
 
   function reportOn (k) {
-    report[k] = readable[k];
+    report[k] = state[k];
   }
 
-  report.bufferLength = readable.buffer.length;
+  if (~properties.indexOf('bufferLength')) report.bufferLength = state.buffer.length;
   return report;
 }
 
-proto._reportWritable = function (writable) {
-  var report = {};
+proto.reportReadable = function (readable) {
+  return this._reportState('readable', readable);
+}
 
-  [ //'highWaterMark'
-  ].forEach(reportOn);
-
-  function reportOn (k) {
-    report[k] = writable[k];
-  }
-
-  report.bufferLength = writable.buffer.length;
-  return report;
+proto.reportWritable = function (writable) {
+  return this._reportState('writable', writable);
 }
 
 proto.endSoon = function () {
