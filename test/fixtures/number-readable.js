@@ -19,7 +19,7 @@ function NumberReadable (opts) {
 NumberReadable.prototype._read = function () {
   if (this.idx > this.to) return this.push(null);
   var push = function () { this.push('' + this.idx++); }.bind(this);
-  setImmediate(push);
+  setTimeout(push, this.interval);
 }
 
 // Test
