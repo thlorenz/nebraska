@@ -9,6 +9,7 @@ module.exports = exports = WatcherReadable;
 var defaultStateProps = [ 'highWaterMark', 'bufferLength' ];
 
 util.inherits(WatcherReadable, Readable);
+
 /**
  * Creates a readable stream that streams readable/writable state changes of the given stream.
  * 
@@ -20,7 +21,7 @@ util.inherits(WatcherReadable, Readable);
  *  - readable {Array[String]} names of readable properties that should be included in the state stream (default: highWaterMark, bufferLength)
  *  - writable {Array[String]} names of writable properties that should be included in the state stream (default: highWaterMark, bufferLength)
  *  - label {String} label that is emitted with every state update (default: the name of the stream constructor + (S))
- * @return 
+ * @return {Stream} WatcherReadable that emits state updates.
  */
 function WatcherReadable (stream, opts) { 
   if (!(this instanceof WatcherReadable)) return new WatcherReadable(stream, opts);
@@ -111,6 +112,9 @@ proto.endSoon = function () {
 
 /**
  * Arrays of all property names for each type of stream which make sense to be included in state updates.
+ * @return {Object} with the following properties
+ *  - readable: {Array[String]} properties of the stream.readableState
+ *  - writable: {Array[String]} properties of the stream.writableState
  */
 exports.properties = {
     writable: [ 

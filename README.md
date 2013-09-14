@@ -27,8 +27,12 @@ numbersState.on('data', console.log.bind(console));
 powersState.on('data', console.log.bind(console));
 ```
 
-**Output:** that shows that buffer is filled to `highWaterMark` and drained while the faster number stream gets paused
+#### Output:
+
+The below shows that buffer is filled to `highWaterMark` and drained while the faster number stream gets paused
 due to backpressure.
+
+**Note:** the last part of the output was omitted for brevity.
 
 ```sh
 Emitted:  0
@@ -79,9 +83,47 @@ Transformed:  16
 ## API
 
 
+###*nebraska(stream[, opts])*
+```
+/**
+ * Creates a readable stream that streams readable/writable state changes of the given stream.
+ * 
+ * @name WatcherReadable
+ * @function
+ * @param stream {Stream} a readable and/or writable stream whose states to stream
+ * @param opts {Object} with the following properties
+ *  - interval {Number} the millisecond interval at which state updates are streamed (default: 500)
+ *  - readable {Array[String]} names of readable properties that should be included in the state stream (default: highWaterMark, bufferLength)
+ *  - writable {Array[String]} names of writable properties that should be included in the state stream (default: highWaterMark, bufferLength)
+ *  - label {String} label that is emitted with every state update (default: the name of the stream constructor + (S))
+ * @return {Stream} WatcherReadable that emits state updates.
+ */
+```
+
+###*WatcherReadable.endSoon*
+
+```
+/**
+ * Call this in case you want to tell the state stream to end.
+ * Useful for testing and/or when you want to end your debugging session and allow the program to exit.
+ */
+```
+
+###*nebraska.properties*
+
+```
+/**
+ * Arrays of all property names for each type of stream which make sense to be included in state updates.
+ * @return {Object} with the following properties
+ *  - readable: {Array[String]} properties of the stream.readableState
+ *  - writable: {Array[String]} properties of the stream.writableState
+ */
+ ```
+
+
 ## Why the name Nebraska?
 
-Cause it has more streams than Montana.
+Because it has more streams than Montana.
 
 ## License
 
