@@ -14,10 +14,15 @@ function PowerTransform (opts) {
 
   opts = opts || {};
   Transform.call(this, opts);
+  this._throttle = opts.throttle;
 }
 
 PowerTransform.prototype._transform = function (chunk, encoding, cb) {
-  var num = parseInt(chunk, 10);
-  this.push('' + (num * num));
-  cb();
+  var self = this;
+  function respond () {
+    var num = parseInt(chunk, 10);
+    self.push('' + (num * num))
+    cb();
+  }
+  return this._throttle ? setTimeout(respond, this._throttle) : respond();
 }
