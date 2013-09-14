@@ -3,7 +3,7 @@
 
 var test = require('tap').test
 var nebraska = require('../')
-var numbers = require('./fixtures/number-readable')
+var powers = require('./fixtures/power-transform')
 var devnull = require('dev-null')
 
 var stream = require('stream')
@@ -12,115 +12,33 @@ function inspect(obj, depth) {
   console.error(require('util').inspect(obj, false, depth || 5, true));
 }
 
-test('\nreadable non-flowing', function (t) {
+test('\nduplex non-flowing', function (t) {
   t.plan(2)
-  var readable = numbers({ to: 1 })
+  var duplex = powers()
 
-  var readableStates = nebraska(readable, { interval: null });
+  var duplexStates = nebraska(duplex, { interval: null });
   
-  readableStates.once('readable', function () {
+  duplexStates.once('readable', function () {
+    var state = duplexStates.read()
     t.deepEqual(
-        readableStates.read()
-      , { label: 'NumberReadable(S)', readable: { highWaterMark: 16384, bufferLength: 0 } }
-      , 'before stream emits reads label, hwm and bufferlength (0)'
+        state
+      , { label: 'PowerTransform(S)',
+          readable: { highWaterMark: 16384, bufferLength: 0 },
+          writable: { highWaterMark: 16384, bufferLength: 0 } }
+      , 'before write stream emits reads label, hwm and bufferlength (0) for readable and writable states'
     )
 
-    // turn on flowing mode, otherwise on('end') is not called (thanks @substack)
-    readable
-      .on('data', function (d) {})
-      .once('end', function () { 
-        t.deepEqual(
-            readableStates.read()
-          , { label: 'NumberReadable(S)', readable: { highWaterMark: 16384, bufferLength: 0 } }
-          , 'after stream emits reads label, hwm and bufferlength (0)'
-        )
-        readableStates.endSoon();  
+    duplex.write('1');
+    duplexStates.once('readable', function () {
+      var state = duplexStates.read()
+      t.deepEqual(
+          state
+        , { label: 'PowerTransform(S)',
+            readable: { highWaterMark: 16384, bufferLength: 1 },
+            writable: { highWaterMark: 16384, bufferLength: 0 } }
+        , 'after write stream emits reads label, hwm and bufferlength (1) for readable and writable states'
+      )
+      duplexStates.endSoon()
     })
   })
-})
-
-function check(t, opts, expected, msg) {
-  var readable = numbers({ to: 1 })
-
-  var readableStates = nebraska(
-      readable
-    , { interval: null, readable: opts.readable, writable: opts.writable }
-  );
-
-  readable
-    .on('data', function () {})
-    .once('end', function () { 
-      readableStates.once('readable', function () {
-        var res = readableStates.read();
-        if (opts.debug) inspect(res)
-        t.deepEqual(
-            res  
-          , expected 
-          , msg 
-        )
-        readableStates.endSoon();  
-        t.end()
-      })
-  })
-}
-
-test('\nreadable empty config properties', function (t) {
-  check(t
-    , { readable: [] }
-    , { label: 'NumberReadable(S)', readable: {} }
-    , 'stream emits reads label only'
-  );
-})
-
-test('\nreadable all meaningful config properties', function (t) {
-  check(t
-    , { readable: [ 
-          'highWaterMark'
-        , 'length'
-        , 'pipes'
-        , 'pipesCount'
-        , 'flowing'
-        , 'ended'
-        , 'endEmitted'
-        , 'reading'
-        , 'calledRead'
-        , 'sync'
-        , 'needReadable'
-        , 'emittedReadable'
-        , 'readableListening'
-        , 'objectMode'
-        , 'defaultEncoding'
-        , 'ranOut'
-        , 'awaitDrain'
-        , 'readingMore'
-        , 'decoder'
-        , 'encoding'
-        ]
-      , debug: false
-      }
-    , { label: 'NumberReadable(S)',
-        readable: { 
-          highWaterMark: 16384,
-          length: 0,
-          pipes: null,
-          pipesCount: 0,
-          flowing: false,
-          ended: true,
-          endEmitted: true,
-          reading: false,
-          calledRead: true,
-          sync: false,
-          needReadable: true,
-          emittedReadable: false,
-          readableListening: false,
-          objectMode: false,
-          defaultEncoding: 'utf8',
-          ranOut: false,
-          awaitDrain: 0,
-          readingMore: false,
-          decoder: null,
-          encoding: null } 
-      }
-    , 'stream emits values for all properties'
-  );
 })
