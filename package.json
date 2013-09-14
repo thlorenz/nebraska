@@ -1,6 +1,6 @@
 {
   "name": "nebraska",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Streams the state of another stream.",
   "main": "index.js",
   "scripts": {
