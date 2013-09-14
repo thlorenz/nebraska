@@ -47,40 +47,23 @@ test('\nwritable empty config properties', function (t) {
 
 test('\nwritable all meaningful config properties', function (t) {
   check(t
-    , { writable: [ 
-          'highWaterMark'
-        , 'objectMode'
-        , 'needDrain'
-        , 'ending'
-        , 'ended'
-        , 'finished'
-        , 'decodeStrings'
-        , 'defaultEncoding'
-        , 'length'
-        , 'writing'
-        , 'sync'
-        , 'bufferProcessing'
-        , 'writelen'
-        , 'bufferLength'
-        ]
-      , debug: false
-      }
+    , { writable: nebraska.properties.writable, debug: true }
     , { label: 'TarpitWritable(S)',
         writable:
-        { highWaterMark: 16384,
-          objectMode: false,
-          needDrain: false,
-          ending: false,
-          ended: false,
-          finished: false,
-          decodeStrings: true,
-          defaultEncoding: 'utf8',
-          length: 0,
-          writing: false,
-          sync: true,
-          bufferProcessing: false,
-          writelen: 0,
-          bufferLength: 0 } }
+        { highWaterMark    :  16384,
+          objectMode       :  false,
+          needDrain        :  false,
+          ending           :  false,
+          ended            :  false,
+          finished         :  false,
+          decodeStrings    :  true,
+          defaultEncoding  :  'utf8',
+          length           :  0,
+          writing          :  false,
+          sync             :  true,
+          bufferProcessing :  false,
+          writelen         :  0,
+          bufferLength     :  0 } }
     , 'stream emits values for all properties'
   );
 })

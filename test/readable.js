@@ -77,26 +77,28 @@ test('\nreadable empty config properties', function (t) {
 
 test('\nreadable all meaningful config properties', function (t) {
   check(t
-    , { readable: [ 
-          'highWaterMark'
-        , 'objectMode'
-        , 'flowing'
-        , 'pipesCount'
-        , 'reading' 
-        , 'ranOut'
-        , 'awaitDrain'
-        ]
-      , inspect: true
-      }
+    , { readable: nebraska.properties.readable, inspect: true }
     , { label: 'NumberReadable(S)',
         readable:
-        { highWaterMark: 16384,
-          objectMode: false,
-          flowing: false,
-          pipesCount: 0,
-          reading: false,
-          ranOut: false,
-          awaitDrain: 0 } }
+        { highWaterMark     :  16384,
+          length            :  0,
+          pipesCount        :  0,
+          flowing           :  false,
+          ended             :  true,
+          endEmitted        :  true,
+          reading           :  false,
+          calledRead        :  true,
+          sync              :  false,
+          needReadable      :  true,
+          emittedReadable   :  false,
+          readableListening :  false,
+          objectMode        :  false,
+          defaultEncoding   :  'utf8',
+          ranOut            :  false,
+          awaitDrain        :  0,
+          readingMore       :  false,
+          encoding          :  null,
+          bufferLength      :  0 } }
     , 'stream emits values for all properties'
   );
 })
