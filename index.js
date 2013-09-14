@@ -33,7 +33,7 @@ function WatcherReadable (stream, opts) {
   if (stream._writableState) info.writable = stream._writableState;
   this._streamInfo = info;
 
-  this._label = (opts.blessed && opts.blessed.label) || stream.constructor.name + '(S)';
+  this._label = opts.label || stream.constructor.name + '(S)';
   this._ending = false;
 }
 
