@@ -1,6 +1,6 @@
 {
   "name": "nebraska",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Streams the state of another stream.",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,14 @@
     "tap": "~0.4.3",
     "dev-null": "~0.1.0"
   },
-  "keywords": [ "stream", "streams", "readable", "state", "status", "watch" ],
+  "keywords": [
+    "stream",
+    "streams",
+    "readable",
+    "state",
+    "status",
+    "watch"
+  ],
   "author": {
     "name": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
